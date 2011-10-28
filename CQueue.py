@@ -44,24 +44,24 @@ class CQueue(CList):
     self._CList__size -= 1
     return data
   def First(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def Last(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def Right(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def Left(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def getData(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def getLast(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def getFirst(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def isLast(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def isFirst(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def Insert(self, data, flag = 1):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
   def Remove(self):
-    raise AttributeError
+    raise AttributeError, "¡Función no definida en CQueue!"
