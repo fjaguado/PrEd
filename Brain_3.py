@@ -48,7 +48,7 @@ class WB(Brain):
 	      self.actions.Push(wumpus_say)
 	      # le volvemos a preguntar para actualizar lo que dice
 	      wumpus_say = self.robot.move('talk')
-      else:
+      else:# self.robot.getItem
 	if self.pilot.isCrossRoad():
 	  # fijamos el current en el último elemento
 	  self.backtrace.Last()
