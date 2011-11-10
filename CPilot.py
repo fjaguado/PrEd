@@ -6,7 +6,17 @@ class CPilot(object):
         self.__sonar = {'right' : 0, 'down' : 0, 'left' : 0, 'up' : 0}
         self.__inverse = {'right' : 'left', 'down' : 'up', 'left' : 'right', 'up' : 'down'}
         self.__culdesac = False
-        
+    def possibleActions(self):
+        motions = dict(self.__sonar)
+        if self.__previous != None:
+            motions[self.__inverse[self.__previous]] = 0
+        result = [(False, self.__inverse[self.__previous])]
+        for i in motions:
+            if motions[i] == 1:
+                a = (True, i)
+                result.append(a)
+        #print result
+        return result    
     def setCulDeSac(self, culdesac):
         self.__culdesac = culdesac == True
 

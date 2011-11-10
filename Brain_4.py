@@ -1,0 +1,63 @@
+# -*- coding: cp1252 -*-
+from pyrobot.brain import Brain
+import CPilot
+import CStack
+# recargamos por lo que pueda pasar
+
+reload(CPilot)
+reload(CStack)
+
+class WB(Brain):
+  def setup(self):
+    self.counter = 0
+    self.inverse = {'right' : 'left', 'down' : 'up', 'left' : 'right', 'up' : 'down'}
+    #self.actions = CQueue.CQueue()
+    self.lastaction = None
+    #self.backtrace = CList.CList() #Lista donde guardaremos el mov. que tiene que hacer el robot en cada cruce para volver
+    self.stack = CStack.CStack()
+    self.pilot = CPilot.CPilot()#CPilot
+    self.robot.move('reset')
+  def step(self):
+    # si el robot aún no ha llegado a la salida
+    if not(self.robot.getItem('win')):
+      # utilizamos el sonar
+      self.pilot.setSonar(self.robot.getItem('sonar'))
+      # si estamos en un cruce
+      if self.pilot.isCrossRoad():
+	# si es un CulDeSac y la pila no está vacía
+	if self.pilot.getCulDeSac() == True and self.stack.isEmpty() != True:
+	  # sacamos un movimiento de la pila del estilo ( true, 'right')
+	  accio = self.stack.Pop()
+	  #print 'Cul de sac'
+	  # miramos si el primer valor de la tupla es True 
+	  if accio[0] == True:
+	    # ponemos CulDeSac a false
+	    self.pilot.setCulDeSac(False)
+	  # cogemos el 2o valor de la tupla como próximo movimiento
+	  accio = self.pilot.moveTo(accio[1])
+	else:# sino es un CulDeSac o la pila está vacía
+	  #print 'Possibles'
+	  # miramos los posibles movimientos
+	  accions_possibles = self.pilot.possibleActions()
+	  # guardamos todos los posibles en la pila
+	  for i in accions_possibles:
+	    self.stack.Push(i)
+	  # sacamos un movimiento de la pila
+	  accio = self.stack.Pop()
+	  # movemos nuestro robot
+	  accio = self.pilot.moveTo(accio[1])
+	  # ponemos CulDeSac a False
+	  self.pilot.setCulDeSac(False)
+      else:#sino es un cruce
+	  #print 'nextMove'
+	  # movemos al robot al próximo movimiento
+	  accio = self.pilot.nextMove()
+      # miramos si es oro y lo cogemos
+      pos = self.robot.move(accio)
+      if pos == 'gold':
+	  self.robot.move('grab')
+	  
+def INIT(engine):
+	return WB('WB', engine)
+
+	
