@@ -34,16 +34,16 @@ class CList(object):
   def First(self):
     if self.__size == 0: 
       raise IndexError, "Lista vacia, no se puede ir al principio"
-    elif self.__first == self.__current:
-      print "Ya estamos al principio de la lista"
+    #elif self.__first == self.__current:
+      #print "Ya estamos al principio de la lista"
     else:
       self.__current = self.__first
       
   def Last(self):
     if self.__size == 0:
       raise IndexError, "Lista vacia, no se puede ir al final"
-    elif self.__last == self.__current:
-      print "Ya estamos al final"
+    #elif self.__last == self.__current:
+      #print "Ya estamos al final"
     else:
       self.__current = self.__last
       
