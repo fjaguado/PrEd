@@ -19,35 +19,27 @@ class WB(Brain):
     self.robot.move('reset')
   def step(self):
     # si el robot aún no ha llegado a la salida
-    if not(self.robot.getItem('win')):
-      # utilizamos el sonar
-      self.pilot.setSonar(self.robot.getItem('sonar'))
-      # si estamos en un cruce
-      if self.pilot.isCrossRoad():
+    if not(self.robot.getItem('win')): 
+      self.pilot.setSonar(self.robot.getItem('sonar')) # utilizamos el sonar
+      if self.pilot.isCrossRoad():# si estamos en un cruce
 	# si es un CulDeSac y la pila no está vacía
 	if self.pilot.getCulDeSac() == True and self.stack.isEmpty() != True:
 	  # sacamos un movimiento de la pila del estilo ( true, 'right')
 	  accio = self.stack.Pop()
-	  #print 'Cul de sac'
 	  # miramos si el primer valor de la tupla es True 
-	  if accio[0] == True:
-	    # ponemos CulDeSac a false
-	    self.pilot.setCulDeSac(False)
-	  # cogemos el 2o valor de la tupla como próximo movimiento
-	  accio = self.pilot.moveTo(accio[1])
+	  if accio[0] == True: 
+	    self.pilot.setCulDeSac(False) # ponemos CulDeSac a false
+	  accio = self.pilot.moveTo(accio[1]) # cogemos el 2o valor de la tupla como próximo movimiento
+	  
 	else:# sino es un CulDeSac o la pila está vacía
 	  #print 'Possibles'
 	  # miramos los posibles movimientos
-	  accions_possibles = self.pilot.possibleActions()
-	  # guardamos todos los posibles en la pila
+	  accions_possibles = self.pilot.possibleActions()# guardamos todos los posibles en la pila
 	  for i in accions_possibles:
-	    self.stack.Push(i)
-	  # sacamos un movimiento de la pila
-	  accio = self.stack.Pop()
-	  # movemos nuestro robot
-	  accio = self.pilot.moveTo(accio[1])
-	  # ponemos CulDeSac a False
-	  self.pilot.setCulDeSac(False)
+	    self.stack.Push(i) 
+	  accio = self.stack.Pop() # sacamos un movimiento de la pila
+	  accio = self.pilot.moveTo(accio[1])# movemos nuestro robot 
+	  self.pilot.setCulDeSac(False)# ponemos CulDeSac a False
       else:#sino es un cruce
 	  #print 'nextMove'
 	  # movemos al robot al próximo movimiento

@@ -9,13 +9,13 @@ class CPilot(object):
     def possibleActions(self):
         motions = dict(self.__sonar)
         if self.__previous != None:
-            motions[self.__inverse[self.__previous]] = 0
+	  motions[self.__inverse[self.__previous]] = False# borramos la direccion para no volver
         result = [(False, self.__inverse[self.__previous])]
+        #result = []
         for i in motions:
-            if motions[i] == 1:
+            if motions[i] == True:
                 a = (True, i)
                 result.append(a)
-        #print result
         return result    
     def setCulDeSac(self, culdesac):
         self.__culdesac = culdesac == True
