@@ -8,13 +8,10 @@ reload(CTree)
 
 class WB(Brain):
     def setup(self):
-        self.counter = 0
-        self.backtrace = []
         self.pilot = CPilot.CPilot()
         self.stack = CStack.CStack()
         self.tree = CTree.CTree()
         self.tree.Build('/home/kserviii/CPilot/db.xml')
-        self.newdata = []
         self.robot.move('reset')
         self.door_locations = []
         self.door_keys = []
@@ -22,69 +19,62 @@ class WB(Brain):
     def step(self):
         if not(self.robot.getItem('win')):
             self.pilot.setSonar(self.robot.getItem('sonar'))
-            #if self.robot.getItem('golds') >= 0:
+            # si esta en un cruce
             if self.pilot.isCrossRoad():
-                if self.pilot.getCulDeSac() == True and self.stack.isEmpty() != True:
-                    accio = self.stack.Pop()
-                    #print 'Cul de sac'
+		# si es un CulDeSac y la pila no esta vacia
+                if self.pilot.getCulDeSac() == True and not self.stack.isEmpty():
+                    accio = self.stack.Pop()# cogemos la accion de la pila
                     if accio[0] == True:
-                        self.pilot.setCulDeSac(False)
+                        self.pilot.setCulDeSac(False)# ponemos a falso el CulDeSac
                     accio = self.pilot.moveTo(accio[1])
                 else:
-                    #print 'Possibles'
-                    accions_possibles = self.pilot.possibleActions()
-                    for i in accions_possibles:
+                    accions_possibles = self.pilot.possibleActions()# sino miramos las acciones posibles
+                    for i in accions_possibles:# metemos en la pila las acciones posibles
                         self.stack.Push(i)
-                    accio = self.stack.Pop()
+                    accio = self.stack.Pop()# como ya tenemos movimentos en la pila, cogemos uno
                     accio = self.pilot.moveTo(accio[1])
                     self.pilot.setCulDeSac(False)
             else:
-                #print 'nextMove'
-                accio = self.pilot.nextMove()
-            pos = self.robot.move(accio)
-            if pos == 'gold':
+                accio = self.pilot.nextMove()# si no es un cruce, nextMove
+            pos = self.robot.move(accio)# cogemos la accion del robot
+            if pos == 'gold':# si es oro, lo cogemos
                 self.robot.move('grab')
-            elif pos == 'key':
+            elif pos == 'key': # si es llave, hablamos y guardamos la informacion
                 #self.robot.move('talk')
                 nouAnimal = []
                 while 1:
                     info = self.robot.move('talk')
-                    #print str(info)
                     if info != "This thing doesn't speak!":
                         nouAnimal.append(info)
                     else:
                         break
                 if nouAnimal:
-                    #print 'NOU ANIMAL:' + str(nouAnimal)
-                    self.tree.AddData(nouAnimal)
+                    self.tree.AddData(nouAnimal)# guardamos el nuevo animal en el arbol
 
-            elif pos == 'door':
-                #self.robot.move('talk')
-                #self.robot.getItem('location')
+            elif pos == 'door':# si estamos ante una puerta
                 position = self.robot.getItem('location');
-                JaVist = self.JaVisitat(position)
-                if not JaVist:
+                JaVist = self.JaVisitat(position)# comprobamos si ya hemos visitado la puerta
+                if not JaVist:#si no hemos visitado la puerta antes, hablamos con ella
                     atributs = []                    
                     while 1:
                         info=self.robot.move('talk')
                         if info:
-                            atributs.append(info)
+                            atributs.append(info)# guardamos los atributos nuevos
                         else:
                             break
                 else:
                     atributs = JaVist
-                animal = self.tree.GetDataClass(atributs)
+                animal = self.tree.GetDataClass(atributs)# recuperamos el dato
                 if animal:
-                    self.robot.move(animal)
+                    self.robot.move(animal)# si hay animal, realizamos la accion
                 else:
-                    self.door_locations.append(position)
-                    self.door_keys.append(atributs)
+                    self.door_locations.append(position)# sino, guardamos la posicion de la puerta
+                    self.door_keys.append(atributs)# y los atributos de la misma
 
     def JaVisitat(self, position):
         X = range(len(self.door_locations))
         for i in X:
             if self.door_locations[i] == position:
-                #print 'JAVIST:' + str(self.door_keys[i])
                 return self.door_keys[i]
         return None
                 
